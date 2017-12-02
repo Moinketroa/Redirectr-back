@@ -22,7 +22,7 @@ import * as Joi from 'joi';
                     clicks: Joi.number().required(),
                     main_link: Joi.number(),
                     links: Joi.array().min(1)
-                }).required()
+                })
             }
         },
         description: 'Get one redirectr',
