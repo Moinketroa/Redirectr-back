@@ -1,13 +1,36 @@
 import { HapinessModule, HttpServerService, OnError, OnStart } from '@hapiness/core';
 import { LoggerModule, LoggerService } from '@hapiness/logger';
 import { Observable } from 'rxjs/Observable';
+import { SwagModule } from '@hapiness/swag';
+import { Config } from '@hapiness/config';
+import { MongoModule } from '@hapiness/mongo';
+
+import {
+    GetAllRedirectrsRoute,
+    GetOneRedirectrsRoute,
+    GetSearchSearchRedirectrsRoute,
+    GetTop3Top3RedirectrsRoute,
+    PostCreateRedirectrsRoute,
+    PutUpdateRedirectrsRoute,
+    DeleteOneRedirectrsRoute
+} from './routes';
 
 @HapinessModule({
     version: '1.0.0',
     imports: [
-        LoggerModule
+        LoggerModule,
+        SwagModule.setConfig(Config.get('swag')),
+        MongoModule
     ],
-    declarations: [],
+    declarations: [
+        GetAllRedirectrsRoute,
+        GetOneRedirectrsRoute,
+        GetSearchSearchRedirectrsRoute,
+        GetTop3Top3RedirectrsRoute,
+        PostCreateRedirectrsRoute,
+        PutUpdateRedirectrsRoute,
+        DeleteOneRedirectrsRoute
+    ],
     providers: [
         HttpServerService
     ]
