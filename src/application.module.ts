@@ -12,7 +12,8 @@ import {
     GetTop3Top3RedirectrsRoute,
     PostCreateRedirectrsRoute,
     PutUpdateRedirectrsRoute,
-    DeleteOneRedirectrsRoute
+    DeleteOneRedirectrsRoute,
+    PutAccessRedirectrsRoute
 } from './routes';
 import { RedirectrsService } from './services/redirectrs/redirectrs.service';
 import { RedirectrsDocumentService } from './services/redirectrs-document/redirectrs-document.service';
@@ -37,7 +38,8 @@ const redirectrDocumentFactory = (mongoClientService: MongoClientService) => new
         GetTop3Top3RedirectrsRoute,
         PostCreateRedirectrsRoute,
         PutUpdateRedirectrsRoute,
-        DeleteOneRedirectrsRoute
+        DeleteOneRedirectrsRoute,
+        PutAccessRedirectrsRoute
     ],
     providers: [
         HttpServerService,

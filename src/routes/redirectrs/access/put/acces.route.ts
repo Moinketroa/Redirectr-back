@@ -1,12 +1,12 @@
 import { OnPut, Route, Request } from '@hapiness/core';
-import { Redirectrs } from '../../../interfaces/redirectrs';
 import { Observable } from 'rxjs/Observable';
 
 import * as Joi from 'joi';
-import { RedirectrsService } from '../../../services/redirectrs/redirectrs.service';
+import { Redirectrs } from '../../../../interfaces/redirectrs';
+import { RedirectrsService } from '../../../../services/redirectrs/redirectrs.service';
 
 @Route({
-    path: '/api/redirectrs/{id}',
+    path: '/api/redirectrs/access/{id}',
     method: 'PUT',
     config: {
         validate: {
@@ -14,15 +14,16 @@ import { RedirectrsService } from '../../../services/redirectrs/redirectrs.servi
                 id: Joi.string().required()
             },
             payload: Joi.object().keys({
-                title: Joi.string().required(),
-                description: Joi.string().required(),
-                main_link: Joi.number(),
-                links: Joi.array()
+                    title: Joi.string().required(),
+                    description: Joi.string().required(),
+                    clicks: Joi.number().required(),
+                    main_link: Joi.number(),
+                    links: Joi.array()
             })
         },
         payload: {
             output: 'data',
-            allow: 'application/json',
+                allow: 'application/json',
             parse: true
         },
         response: {
@@ -37,12 +38,12 @@ import { RedirectrsService } from '../../../services/redirectrs/redirectrs.servi
                 })
             }
         },
-        description: 'Update one redirectr',
-        notes: 'Updates the redirectr for the given id in path parameter and returns it',
-        tags: ['api', 'redirectr']
+        description: 'Access one redirectr',
+        notes: 'Updates the redirectr\'s clicks counter for the given id in path parameter and returns it',
+        tags: ['api', 'redirectr', 'access']
     }
 })
-export class PutUpdateRedirectrsRoute implements OnPut {
+export class PutAccessRedirectrsRoute implements OnPut {
 
     constructor(private _redirectrService: RedirectrsService) {}
 
@@ -51,6 +52,6 @@ export class PutUpdateRedirectrsRoute implements OnPut {
      * @param request
      */
     onPut(request: Request): Observable<Redirectrs> {
-        return this._redirectrService.update(request.params.id, request.payload);
+        return this._redirectrService.access(request.params.id, request.payload);
     }
 }

@@ -32,10 +32,7 @@ export class RedirectrsModel extends Model {
                 type: String,
                 required: true
             },
-            clicks: {
-                type: Number,
-                required: true
-            },
+            clicks: Number,
             main_link: Number,
             links: Array
         }, {

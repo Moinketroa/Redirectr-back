@@ -20,7 +20,7 @@ import { RedirectrsService } from '../../../services/redirectrs/redirectrs.servi
                     main_link: Joi.number(),
                     links: Joi.array()
                     })
-                ).unique().min(1)
+                ).unique()
             }
         },
         description: 'Get all redirectrs',

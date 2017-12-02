@@ -3,7 +3,7 @@ import { RedirectrsDocumentService } from '../redirectrs-document/redirectrs-doc
 import { Observable } from 'rxjs/Observable';
 import { Redirectrs } from '../../interfaces/redirectrs';
 import { HapinessHTTPHandlerResponse } from '@hapiness/core/extensions/http-server';
-import { catchError, flatMap} from 'rxjs/operators';
+import { catchError, flatMap, map } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { Biim } from '@hapiness/biim';
 import { of } from 'rxjs/observable/of';
@@ -27,27 +27,41 @@ export class RedirectrsService {
     }
 
     create(redirectr: Redirectrs): Observable<HapinessHTTPHandlerResponse> {
-        return null;
-        // return this._redirectrsDocumentService.create(redirectr);
+        redirectr.clicks = 0;
+
+        return this._redirectrsDocumentService.create(redirectr)
+            .pipe(
+                catchError(error => _throw(Biim.conflict(error.message))),
+                map(_ => ({ response: _, statusCode: 201}))
+            );
     }
 
     update(id: string, redirectr: Redirectrs): Observable<Redirectrs> {
-        return null;
-        // return this._redirectrsDocumentService.findByIdAndUpdate(id, redirectr);
+        return this._redirectrsDocumentService.findByIdAndUpdate(id, redirectr)
+            .pipe(
+                catchError(error => _throw(Biim.preconditionFailed(error.message))),
+                flatMap(_ => !!_ ? of(_) : _throw(Biim.notFound('Redirectr with id ' + id + ' not found')))
+            );
     }
 
     delete(id: string): Observable<void> {
-        return null;
-        // return this._redirectrsDocumentService.findByIdAndRemove(id);
+        return this._redirectrsDocumentService.findByIdAndRemove(id)
+            .pipe(
+                catchError(error => _throw(Biim.preconditionFailed(error.message))),
+                flatMap(_ => !!_ ? of(undefined) : _throw(Biim.notFound('Redirectr with id ' + id + ' not found')))
+            );
     }
 
     top3(): Observable<Redirectrs[] | void> {
-        return null;
-        // return this._redirectrsDocumentService.findTop3();
+        return this._redirectrsDocumentService.findTop3();
     }
 
     search(query: string[]): Observable<Redirectrs[] | void> {
-        return null;
-        // return this._redirectrsDocumentService.search(query);
+        return this._redirectrsDocumentService.search(query);
+    }
+
+    access(id: string, redirectr: Redirectrs): Observable<Redirectrs> {
+        redirectr.clicks = redirectr.clicks + 1;
+        return this.update(id, redirectr);
     }
 }

@@ -54,26 +54,73 @@ export class RedirectrsDocumentService {
                 flatMap((doc: MongooseDocument) =>
                     !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined)
                 )
-            )
+            );
     }
 
     create(redirectr: Redirectrs): Observable<Redirectrs> {
-        return null;
+        return fromPromise(this._document.create(redirectr))
+            .pipe(
+                map((doc: MongooseDocument) => doc.toJSON() as Redirectrs)
+            );
     }
 
     findByIdAndUpdate(id: string, redirectr: Redirectrs): Observable<Redirectrs | void> {
-        return null;
+        return fromPromise(this._document.findByIdAndUpdate(id, redirectr, { new: true }))
+            .pipe(
+                flatMap((doc: MongooseDocument) => !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined))
+            );
     }
 
     findByIdAndRemove(id: string): Observable<Redirectrs | void> {
-        return null;
+        return fromPromise(this._document.findByIdAndRemove(id))
+            .pipe(
+                flatMap((doc: MongooseDocument) => !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined))
+            );
     }
 
     findTop3(): Observable<Redirectrs[] | void> {
-        return null;
+        return fromPromise(this._document.find({}).sort({clicks: -1}).limit(3))
+            .pipe(
+                flatMap((docs: MongooseDocument[]) =>
+                    of(of(docs))
+                        .pipe(
+                            flatMap(_ => mergeStatic(
+                                _.pipe(
+                                    filter(__ => !!__ && __.length > 0),
+                                    map(__ => __.map(doc => doc.toJSON()))
+                                ),
+                                _.pipe(
+                                    filter(__ => !__ || __.length === 0),
+                                    map(__ => undefined)
+                                )
+                            ))
+                        )
+                )
+            );
     }
 
     search(query: string[]): Observable<Redirectrs[] | void> {
-        return null;
+        let rule = [];
+        query.forEach((tag: string) => rule.push({title: {'$regex' : tag, '$options' : 'i'}}));
+        query.forEach((tag: string) => rule.push({description: {'$regex' : tag, '$options' : 'i'}}));
+
+        return fromPromise(this._document.find().or(rule))
+            .pipe(
+                flatMap((docs: MongooseDocument[]) =>
+                    of(of(docs))
+                        .pipe(
+                            flatMap(_ => mergeStatic(
+                                _.pipe(
+                                    filter(__ => !!__ && __.length > 0),
+                                    map(__ => __.map(doc => doc.toJSON()))
+                                ),
+                                _.pipe(
+                                    filter(__ => !__ || __.length === 0),
+                                    map(__ => undefined)
+                                )
+                            ))
+                        )
+                )
+            );
     }
 }

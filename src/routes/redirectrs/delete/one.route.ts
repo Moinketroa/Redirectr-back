@@ -2,6 +2,7 @@ import { Route, Request, OnDelete } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
 
 import * as Joi from 'joi';
+import { RedirectrsService } from '../../../services/redirectrs/redirectrs.service';
 
 @Route({
     path: '/api/redirectrs/{id}',
@@ -19,13 +20,13 @@ import * as Joi from 'joi';
 })
 export class DeleteOneRedirectrsRoute implements OnDelete {
 
-    constructor() {}
+    constructor(private _redirectrService: RedirectrsService) {}
 
     /**
      * OnGet implementation
      * @param request
      */
     onDelete(request: Request): Observable<void> {
-        return null;
+        return this._redirectrService.delete(request.params.id);
     }
 }

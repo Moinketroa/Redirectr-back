@@ -4,6 +4,8 @@ import { Observable } from 'rxjs/Observable';
 import { HapinessHTTPHandlerResponse } from '@hapiness/core/extensions/http-server';
 
 import * as Joi from 'joi';
+import { RedirectrsService } from '../../../services/redirectrs/redirectrs.service';
+import { Redirectrs } from '../../../interfaces/redirectrs';
 
 @Route({
     path: '/api/redirectrs',
@@ -11,11 +13,9 @@ import * as Joi from 'joi';
     config: {
         validate: {
             payload: Joi.object().keys({
-                id: Joi.string().required(),
                 title: Joi.string().required(),
                 description: Joi.string().required(),
-                clicks: Joi.number().required(),
-                main_link: Joi.number(),
+                main_link: Joi.number().required(),
                 links: Joi.array().min(1)
             })
         },
@@ -43,13 +43,13 @@ import * as Joi from 'joi';
 })
 export class PostCreateRedirectrsRoute implements OnPost {
 
-    constructor() {}
+    constructor(private _redirectrService: RedirectrsService) {}
 
     /**
      * OnGet implementation
      * @param request
      */
     onPost(request: Request): Observable<HapinessHTTPHandlerResponse> {
-        return null;
+        return this._redirectrService.create(request.payload as Redirectrs);
     }
 }

@@ -3,9 +3,10 @@ import { Observable } from 'rxjs/Observable';
 import { Redirectrs } from '../../../../interfaces/redirectrs';
 
 import * as Joi from 'joi';
+import { RedirectrsService } from '../../../../services/redirectrs/redirectrs.service';
 
 @Route({
-    path: '/api/redirectrs/search',
+    path: '/api/redirectrs/search/{tags}',
     method: 'GET',
     config: {
         validate: {
@@ -24,7 +25,7 @@ import * as Joi from 'joi';
                         main_link: Joi.number(),
                         links: Joi.array()
                     })
-                ).unique().min(1)
+                ).unique()
             }
         },
         description: 'Get result of the research',
@@ -34,13 +35,13 @@ import * as Joi from 'joi';
 })
 export class GetSearchSearchRedirectrsRoute implements OnGet {
 
-    constructor() {}
+    constructor(private _redirectrService: RedirectrsService) {}
 
     /**
      * OnGet implementation
      * @param request
      */
-    onGet(request: Request): Observable<Redirectrs[]> {
-        return null;
+    onGet(request: Request): Observable<Redirectrs[] | void> {
+        return this._redirectrService.search(request.params.tags.split('+'));
     }
 }

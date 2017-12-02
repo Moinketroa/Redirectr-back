@@ -3,6 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { Redirectrs } from '../../../../interfaces/redirectrs';
 
 import * as Joi from 'joi';
+import { RedirectrsService } from '../../../../services/index';
 
 @Route({
     path: '/api/redirectrs/top3',
@@ -19,7 +20,7 @@ import * as Joi from 'joi';
                         main_link: Joi.number(),
                         links: Joi.array()
                     })
-                ).unique().min(1)
+                ).unique().max(3)
             }
         },
         description: 'Get Top 3 redirectrs',
@@ -29,13 +30,13 @@ import * as Joi from 'joi';
 })
 export class GetTop3Top3RedirectrsRoute implements OnGet {
 
-    constructor() {}
+    constructor(private _redirectrService: RedirectrsService) {}
 
     /**
      * OnGet implementation
      * @param request
      */
-    onGet(request: Request): Observable<Redirectrs[]> {
-        return null;
+    onGet(request: Request): Observable<Redirectrs[] | void> {
+        return this._redirectrService.top3();
     }
 }

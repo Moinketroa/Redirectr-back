@@ -4,3 +4,4 @@ export * from './post';
 export * from './put';
 export * from './search';
 export * from './top3';
+export * from './access';
