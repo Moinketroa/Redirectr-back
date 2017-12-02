@@ -6,7 +6,7 @@ import { Config } from '@hapiness/config';
     collection: 'peoples',
     options: Config.get('mongodb')
 })
-export class PeopleModel extends Model {
+export class RedirectrsModel extends Model {
     // property to store schema
     readonly schema: any;
 
@@ -17,7 +17,7 @@ export class PeopleModel extends Model {
      */
     constructor(private _mongoClientService: MongoClientService) {
         // call parent constructor
-        super(PeopleModel);
+        super(RedirectrsModel);
 
         // get dao
         const dao = this._mongoClientService.getDao(this.connectionOptions);
