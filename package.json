@@ -45,11 +45,11 @@
         "@hapiness/logger": "^1.1.0",
         "@hapiness/mongo": "^1.1.0",
         "@hapiness/swag": "^1.1.0",
-        "@types/joi": "^13.0.0",
+        "@types/joi": "^13.0.1",
         "@types/node": "^8.0.53",
         "debug": "^3.1.0",
         "hapi-auth-jwt2": "^7.3.0",
-        "rxjs": "^5.5.2"
+        "rxjs": "^5.5.3"
     },
     "devDependencies": {
         "@types/fs-extra": "^4.0.5",
