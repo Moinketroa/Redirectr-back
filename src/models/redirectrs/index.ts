@@ -1,1 +1,1 @@
-export * from './redirectrs/model';
+export * from './redirectrs.model';

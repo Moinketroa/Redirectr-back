@@ -2,7 +2,7 @@ export interface Redirectrs {
     id?: string,
     title: string,
     description: string,
-    clicks: number,
+    clicks?: number,
     main_link?: number,
     links?: Links
 }

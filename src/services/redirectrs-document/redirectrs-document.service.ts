@@ -34,11 +34,11 @@ export class RedirectrsDocumentService {
         return null;
     }
 
-    findByIdAndUpdate(id: string, redirectr: Redirectrs) : Observable<Redirectrs | void> {
+    findByIdAndUpdate(id: string, redirectr: Redirectrs): Observable<Redirectrs | void> {
         return null;
     }
 
-    findByIdAndRemove(id: string) : Observable<Redirectrs | void> {
+    findByIdAndRemove(id: string): Observable<Redirectrs | void> {
         return null;
     }
 
