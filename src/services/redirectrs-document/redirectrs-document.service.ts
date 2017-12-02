@@ -4,6 +4,11 @@ import { MongoClientService } from '@hapiness/mongo';
 import { Config } from '@hapiness/config';
 import { Observable } from 'rxjs/Observable';
 import { Redirectrs } from '../../interfaces/redirectrs';
+import { fromPromise } from 'rxjs/observable/fromPromise';
+import { filter, flatMap, map } from 'rxjs/operators';
+import { MongooseDocument } from 'mongoose';
+import { of } from 'rxjs/observable/of';
+import { mergeStatic } from 'rxjs/operators/merge';
 
 @Injectable()
 export class RedirectrsDocumentService {
@@ -23,11 +28,33 @@ export class RedirectrsDocumentService {
     }
 
     find(): Observable<Redirectrs[] | void> {
-        return null;
+        return fromPromise(this._document.find({}))
+            .pipe(
+                flatMap((docs: MongooseDocument[]) =>
+                    of(of(docs))
+                        .pipe(
+                            flatMap(_ => mergeStatic(
+                                _.pipe(
+                                    filter(__ => !!__ && __.length > 0),
+                                    map(__ => __.map(doc => doc.toJSON()))
+                                ),
+                                _.pipe(
+                                    filter(__ => !__ || __.length === 0),
+                                    map(__ => undefined)
+                                )
+                            ))
+                        )
+                )
+            );
     }
 
     findById(id: string): Observable<Redirectrs | void> {
-        return null;
+        return fromPromise(this._document.findById(id))
+            .pipe(
+                flatMap((doc: MongooseDocument) =>
+                    !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined)
+                )
+            )
     }
 
     create(redirectr: Redirectrs): Observable<Redirectrs> {

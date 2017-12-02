@@ -3,6 +3,10 @@ import { RedirectrsDocumentService } from '../redirectrs-document/redirectrs-doc
 import { Observable } from 'rxjs/Observable';
 import { Redirectrs } from '../../interfaces/redirectrs';
 import { HapinessHTTPHandlerResponse } from '@hapiness/core/extensions/http-server';
+import { catchError, flatMap} from 'rxjs/operators';
+import { _throw } from 'rxjs/observable/throw';
+import { Biim } from '@hapiness/biim';
+import { of } from 'rxjs/observable/of';
 
 
 @Injectable()
@@ -15,8 +19,11 @@ export class RedirectrsService {
     }
 
     one(id: string): Observable<Redirectrs> {
-        return null;
-        // return this._redirectrsDocumentService.findById(id);
+        return this._redirectrsDocumentService.findById(id)
+            .pipe(
+                catchError(error => _throw(Biim.preconditionFailed(error.message))),
+                flatMap(_ => !!_ ? of(_) : _throw(Biim.notFound('Redirectr with id ' + id + ' not found')))
+            );
     }
 
     create(redirectr: Redirectrs): Observable<HapinessHTTPHandlerResponse> {

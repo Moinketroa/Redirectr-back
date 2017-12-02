@@ -32,7 +32,7 @@ import * as Joi from 'joi';
                     description: Joi.string().required(),
                     clicks: Joi.number().required(),
                     main_link: Joi.number(),
-                    links: Joi.array().min(1)
+                    links: Joi.array()
                 })
             }
         },

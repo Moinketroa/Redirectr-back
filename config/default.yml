@@ -3,8 +3,8 @@ server:
   port: 4443
 swag:
   info:
-    title: New Web's Technologies course with Hapiness
+    title: Redirectr API with Hapiness
 mongodb:
-  host: 0.0.0.0
+  host: 127.0.0.1
   port: 27017
   db: redirectr

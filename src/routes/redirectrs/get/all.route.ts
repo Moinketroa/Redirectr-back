@@ -3,6 +3,7 @@ import { Redirectrs } from '../../../interfaces/redirectrs';
 import { Observable } from 'rxjs/Observable';
 
 import * as Joi from 'joi';
+import { RedirectrsService } from '../../../services/redirectrs/redirectrs.service';
 
 @Route({
     path: '/api/redirectrs',
@@ -17,7 +18,7 @@ import * as Joi from 'joi';
                     description: Joi.string().required(),
                     clicks: Joi.number().required(),
                     main_link: Joi.number(),
-                    links: Joi.array().min(1)
+                    links: Joi.array()
                     })
                 ).unique().min(1)
             }
@@ -29,13 +30,13 @@ import * as Joi from 'joi';
 })
 export class GetAllRedirectrsRoute implements OnGet {
 
-    constructor() {}
+    constructor(private _redirectrService: RedirectrsService) {}
 
     /**
      * OnGet implementation
      * @param request
      */
-    onGet(request: Request): Observable<Redirectrs[]> {
-        return null;
+    onGet(request: Request): Observable<Redirectrs[] | void> {
+        return this._redirectrService.listAll();
     }
 }

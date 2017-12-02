@@ -3,7 +3,7 @@ import { LoggerModule, LoggerService } from '@hapiness/logger';
 import { Observable } from 'rxjs/Observable';
 import { SwagModule } from '@hapiness/swag';
 import { Config } from '@hapiness/config';
-import { MongoModule } from '@hapiness/mongo';
+import { MongoClientService, MongoModule } from '@hapiness/mongo';
 
 import {
     GetAllRedirectrsRoute,
@@ -14,6 +14,13 @@ import {
     PutUpdateRedirectrsRoute,
     DeleteOneRedirectrsRoute
 } from './routes';
+import { RedirectrsService } from './services/redirectrs/redirectrs.service';
+import { RedirectrsDocumentService } from './services/redirectrs-document/redirectrs-document.service';
+import { RedirectrsModel } from './models/redirectrs/redirectrs.model';
+
+// factory to declare dependency between RedirectrDocumentService and MongoClientService
+// we use it to be sure that MongoClientService will be loaded before RedirectrDocumentService
+const redirectrDocumentFactory = (mongoClientService: MongoClientService) => new RedirectrsDocumentService(mongoClientService);
 
 @HapinessModule({
     version: '1.0.0',
@@ -23,6 +30,7 @@ import {
         MongoModule
     ],
     declarations: [
+        RedirectrsModel,
         GetAllRedirectrsRoute,
         GetOneRedirectrsRoute,
         GetSearchSearchRedirectrsRoute,
@@ -32,7 +40,9 @@ import {
         DeleteOneRedirectrsRoute
     ],
     providers: [
-        HttpServerService
+        HttpServerService,
+        RedirectrsService,
+        { provide: RedirectrsDocumentService, useFactory: redirectrDocumentFactory, deps: [MongoClientService]}
     ]
 })
 export class ApplicationModule implements OnStart, OnError {
@@ -61,6 +71,6 @@ export class ApplicationModule implements OnStart, OnError {
      * @return {void | Observable<any>}
      */
     onError(error: Error, data?: any): void | Observable<any> {
-        this._logger.error('A problem occurred during application\'s lifecycle');
+        this._logger.error('A problem occurred during application\'s lifecycle\n' + error.message + error.stack);
     }
 }
