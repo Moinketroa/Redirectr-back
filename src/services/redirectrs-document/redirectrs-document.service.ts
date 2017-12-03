@@ -9,6 +9,7 @@ import { filter, flatMap, map } from 'rxjs/operators';
 import { MongooseDocument } from 'mongoose';
 import { of } from 'rxjs/observable/of';
 import { mergeStatic } from 'rxjs/operators/merge';
+import { ObjectID } from 'bson';
 
 @Injectable()
 export class RedirectrsDocumentService {
@@ -49,7 +50,11 @@ export class RedirectrsDocumentService {
     }
 
     findById(id: string): Observable<Redirectrs | void> {
-        return fromPromise(this._document.findById(id))
+        let oid = new ObjectID;
+        if (ObjectID.isValid(id)) {
+            oid = ObjectID.createFromHexString(id);
+        }
+        return fromPromise(this._document.findById(oid))
             .pipe(
                 flatMap((doc: MongooseDocument) =>
                     !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined)
@@ -65,14 +70,22 @@ export class RedirectrsDocumentService {
     }
 
     findByIdAndUpdate(id: string, redirectr: Redirectrs): Observable<Redirectrs | void> {
-        return fromPromise(this._document.findByIdAndUpdate(id, redirectr, { new: true }))
+        let oid = new ObjectID;
+        if (ObjectID.isValid(id)) {
+            oid = ObjectID.createFromHexString(id);
+        }
+        return fromPromise(this._document.findByIdAndUpdate(oid, redirectr, { new: true }))
             .pipe(
                 flatMap((doc: MongooseDocument) => !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined))
             );
     }
 
     findByIdAndRemove(id: string): Observable<Redirectrs | void> {
-        return fromPromise(this._document.findByIdAndRemove(id))
+        let oid = new ObjectID;
+        if (ObjectID.isValid(id)) {
+            oid = ObjectID.createFromHexString(id);
+        }
+        return fromPromise(this._document.findByIdAndRemove(oid))
             .pipe(
                 flatMap((doc: MongooseDocument) => !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined))
             );
