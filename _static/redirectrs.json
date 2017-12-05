@@ -1,3 +1,4 @@
+[
 {
     'title': 'You reposted in the wrong neighborhood',
     'description': 'Mashup Glue70 & Shake That-Nate Dogg',
@@ -71,7 +72,7 @@
 ,
 {
 'title': 'tripes à la mode de caen',
-'description': '',
+'description': 'cuisine',
 'clicks': 3,
 'main_link': 0,
 'links': [
@@ -79,3 +80,4 @@
 'https://www.atelierdeschefs.fr/fr/recette/13807-tripes-a-la-mode-de-caen.php'
 ]
 }
+]
