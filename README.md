@@ -20,11 +20,11 @@ npm install -g yarn
 yarn global add @angular/cli  
 yarn install  
 
-## Development server
+## Run
 
 Start MongoDB
 
-Run `yarn | npm run dev:watch` for a dev server. API will be on `http://localhost:4224/`. Go to `http://localhost:4224/documentation` to see the documentation and test the routes !
+Run `yarn | npm run dev:watch`. API will be on `http://localhost:4224/`. Go to `http://localhost:4224/documentation` to see the documentation and test the routes !
 
 ## Build
 
