@@ -2,7 +2,7 @@ import { Route, Request, OnDelete } from '@hapiness/core';
 import { Observable } from 'rxjs/Observable';
 
 import * as Joi from 'joi';
-import { RedirectrsService } from '../../../services/redirectrs/redirectrs.service';
+import { RedirectrsService } from '../../../services/redirectrs';
 
 @Route({
     path: '/api/redirectrs/{id}',

@@ -3,7 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import { Redirectrs } from '../../../../interfaces/redirectrs';
 
 import * as Joi from 'joi';
-import { RedirectrsService } from '../../../../services/redirectrs/redirectrs.service';
+import { RedirectrsService } from '../../../../services/redirectrs';
+import {RedirectrSchema} from '../../../../schema/redirectrs.schema';
 
 @Route({
     path: '/api/redirectrs/search/{tags}',
@@ -17,14 +18,7 @@ import { RedirectrsService } from '../../../../services/redirectrs/redirectrs.se
         response: {
             status: {
                 200: Joi.array().items(
-                    Joi.object().keys({
-                        id: Joi.string().required(),
-                        title: Joi.string().required(),
-                        description: Joi.string().required(),
-                        clicks: Joi.number().required(),
-                        main_link: Joi.number(),
-                        links: Joi.array()
-                    })
+                    RedirectrSchema
                 ).unique()
             }
         },

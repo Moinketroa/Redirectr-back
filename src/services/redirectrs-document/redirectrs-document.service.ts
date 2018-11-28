@@ -5,10 +5,7 @@ import { Config } from '@hapiness/config';
 import { Observable } from 'rxjs/Observable';
 import { Redirectrs } from '../../interfaces/redirectrs';
 import { fromPromise } from 'rxjs/observable/fromPromise';
-import { filter, flatMap, map } from 'rxjs/operators';
 import { MongooseDocument } from 'mongoose';
-import { of } from 'rxjs/observable/of';
-import { mergeStatic } from 'rxjs/operators/merge';
 import { ObjectID } from 'bson';
 
 @Injectable()
@@ -29,111 +26,50 @@ export class RedirectrsDocumentService {
     }
 
     find(): Observable<Redirectrs[] | void> {
-        return fromPromise(this._document.find({}))
-            .pipe(
-                flatMap((docs: MongooseDocument[]) =>
-                    of(of(docs))
-                        .pipe(
-                            flatMap(_ => mergeStatic(
-                                _.pipe(
-                                    filter(__ => !!__ && __.length > 0),
-                                    map(__ => __.map(doc => doc.toJSON()))
-                                ),
-                                _.pipe(
-                                    filter(__ => !__ || __.length === 0),
-                                    map(__ => undefined)
-                                )
-                            ))
-                        )
-                )
-            );
+        return fromPromise(this._document.find())
+            .filter((docs: MongooseDocument[]) => !!docs && docs.length > 0)
+            .map((docs: MongooseDocument[]) => docs.map(doc => doc.toJSON() as Redirectrs))
+            .defaultIfEmpty(undefined);
     }
 
     findById(id: string): Observable<Redirectrs | void> {
-        let oid = new ObjectID;
-        if (ObjectID.isValid(id)) {
-            oid = ObjectID.createFromHexString(id);
-        }
-        return fromPromise(this._document.findById(oid))
-            .pipe(
-                flatMap((doc: MongooseDocument) =>
-                    !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined)
-                )
-            );
+        return fromPromise(this._document.findById(this._objectIdFromString(id)))
+            .filter((doc: MongooseDocument) => !!doc)
+            .map((doc: MongooseDocument) => doc.toJSON() as Redirectrs)
+            .defaultIfEmpty(undefined);
     }
 
     create(redirectr: Redirectrs): Observable<Redirectrs> {
         return fromPromise(this._document.create(redirectr))
-            .pipe(
-                map((doc: MongooseDocument) => doc.toJSON() as Redirectrs)
-            );
+            .map((doc: MongooseDocument) => doc.toJSON() as Redirectrs);
     }
 
     findByIdAndUpdate(id: string, redirectr: Redirectrs): Observable<Redirectrs | void> {
-        let oid = new ObjectID;
-        if (ObjectID.isValid(id)) {
-            oid = ObjectID.createFromHexString(id);
-        }
-        return fromPromise(this._document.findByIdAndUpdate(oid, redirectr, { new: true }))
-            .pipe(
-                flatMap((doc: MongooseDocument) => !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined))
-            );
+        return fromPromise(this._document.findByIdAndUpdate(this._objectIdFromString(id), redirectr, { new: true }))
+            .filter((doc: MongooseDocument) => !!doc)
+            .map((doc: MongooseDocument) => doc.toJSON() as Redirectrs)
+            .defaultIfEmpty(undefined);
     }
 
     findByIdAndRemove(id: string): Observable<Redirectrs | void> {
-        let oid = new ObjectID;
-        if (ObjectID.isValid(id)) {
-            oid = ObjectID.createFromHexString(id);
-        }
-        return fromPromise(this._document.findByIdAndRemove(oid))
-            .pipe(
-                flatMap((doc: MongooseDocument) => !!doc ? of(doc.toJSON() as Redirectrs) : of(undefined))
-            );
-    }
-
-    findTop3(): Observable<Redirectrs[] | void> {
-        return fromPromise(this._document.find({}).sort({clicks: -1}).limit(3))
-            .pipe(
-                flatMap((docs: MongooseDocument[]) =>
-                    of(of(docs))
-                        .pipe(
-                            flatMap(_ => mergeStatic(
-                                _.pipe(
-                                    filter(__ => !!__ && __.length > 0),
-                                    map(__ => __.map(doc => doc.toJSON()))
-                                ),
-                                _.pipe(
-                                    filter(__ => !__ || __.length === 0),
-                                    map(__ => undefined)
-                                )
-                            ))
-                        )
-                )
-            );
+        return fromPromise(this._document.findByIdAndRemove(this._objectIdFromString(id)))
+            .filter((doc: MongooseDocument) => !!doc)
+            .map((doc: MongooseDocument) => doc.toJSON() as Redirectrs)
+            .defaultIfEmpty(undefined);
     }
 
     search(query: string[]): Observable<Redirectrs[] | void> {
-        let rule = [];
+        const rule = [];
         query.forEach((tag: string) => rule.push({title: {'$regex' : tag, '$options' : 'i'}}));
         query.forEach((tag: string) => rule.push({description: {'$regex' : tag, '$options' : 'i'}}));
 
         return fromPromise(this._document.find().or(rule))
-            .pipe(
-                flatMap((docs: MongooseDocument[]) =>
-                    of(of(docs))
-                        .pipe(
-                            flatMap(_ => mergeStatic(
-                                _.pipe(
-                                    filter(__ => !!__ && __.length > 0),
-                                    map(__ => __.map(doc => doc.toJSON()))
-                                ),
-                                _.pipe(
-                                    filter(__ => !__ || __.length === 0),
-                                    map(__ => undefined)
-                                )
-                            ))
-                        )
-                )
-            );
+            .filter((docs: MongooseDocument[]) => !!docs && docs.length > 0)
+            .map((docs: MongooseDocument[]) => docs.map(doc => doc.toJSON() as Redirectrs))
+            .defaultIfEmpty(undefined);
+    }
+
+    private _objectIdFromString(id: string): ObjectID {
+        return ObjectID.isValid(id) ? ObjectID.createFromHexString(id) : new ObjectID;
     }
 }

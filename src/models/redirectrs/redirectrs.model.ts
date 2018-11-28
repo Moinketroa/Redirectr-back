@@ -1,5 +1,6 @@
 import { Model, MongoClientService, MongoModel } from '@hapiness/mongo';
 import { Config } from '@hapiness/config';
+import { SchemaDefinition } from 'mongoose';
 
 @MongoModel({
     adapter: 'mongoose',
@@ -23,7 +24,7 @@ export class RedirectrsModel extends Model {
         const dao = this._mongoClientService.getDao(this.connectionOptions);
 
         // create schema
-        this.schema = new dao.Schema({
+        const redirectrSchemaDefinition: SchemaDefinition = {
             title: {
                 type: String,
                 required: true
@@ -32,12 +33,16 @@ export class RedirectrsModel extends Model {
                 type: String,
                 required: true
             },
-            clicks: Number,
             main_link: Number,
             links: Array
-        }, {
-            versionKey: false
-        });
+        };
+
+        // set schema
+        this.schema = new dao.Schema(redirectrSchemaDefinition,
+            {
+                versionKey: false
+            }
+        );
 
         // implement virtual method toJSON to delete _id field
         this.schema.set('toJSON', {

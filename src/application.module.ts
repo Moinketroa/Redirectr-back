@@ -9,22 +9,22 @@ import {
     GetAllRedirectrsRoute,
     GetOneRedirectrsRoute,
     GetSearchSearchRedirectrsRoute,
-    GetTop3Top3RedirectrsRoute,
     PostCreateRedirectrsRoute,
     PutUpdateRedirectrsRoute,
     DeleteOneRedirectrsRoute,
-    PutAccessRedirectrsRoute
 } from './routes';
-import { RedirectrsService } from './services/redirectrs/redirectrs.service';
-import { RedirectrsDocumentService } from './services/redirectrs-document/redirectrs-document.service';
-import { RedirectrsModel } from './models/redirectrs/redirectrs.model';
+import {
+    RedirectrsService,
+    RedirectrsDocumentService
+} from './services';
+import { RedirectrsModel } from './models';
 
 // factory to declare dependency between RedirectrDocumentService and MongoClientService
 // we use it to be sure that MongoClientService will be loaded before RedirectrDocumentService
 const redirectrDocumentFactory = (mongoClientService: MongoClientService) => new RedirectrsDocumentService(mongoClientService);
 
 @HapinessModule({
-    version: '1.0.0',
+    version: '1.1.0',
     imports: [
         LoggerModule,
         SwagModule.setConfig(Config.get('swag')),
@@ -35,11 +35,9 @@ const redirectrDocumentFactory = (mongoClientService: MongoClientService) => new
         GetAllRedirectrsRoute,
         GetOneRedirectrsRoute,
         GetSearchSearchRedirectrsRoute,
-        GetTop3Top3RedirectrsRoute,
         PostCreateRedirectrsRoute,
         PutUpdateRedirectrsRoute,
-        DeleteOneRedirectrsRoute,
-        PutAccessRedirectrsRoute
+        DeleteOneRedirectrsRoute
     ],
     providers: [
         HttpServerService,

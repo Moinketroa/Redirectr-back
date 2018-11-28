@@ -3,7 +3,8 @@ import { Redirectrs } from '../../../interfaces/redirectrs';
 import { Observable } from 'rxjs/Observable';
 
 import * as Joi from 'joi';
-import { RedirectrsService } from '../../../services/redirectrs/redirectrs.service';
+import { RedirectrsService } from '../../../services/redirectrs';
+import {LightRedirectrSchema, RedirectrSchema} from '../../../schema/redirectrs.schema';
 
 @Route({
     path: '/api/redirectrs/{id}',
@@ -13,12 +14,7 @@ import { RedirectrsService } from '../../../services/redirectrs/redirectrs.servi
             params: {
                 id: Joi.string().required()
             },
-            payload: Joi.object().keys({
-                title: Joi.string().required(),
-                description: Joi.string().required(),
-                main_link: Joi.number(),
-                links: Joi.array()
-            })
+            payload: LightRedirectrSchema
         },
         payload: {
             output: 'data',
@@ -27,14 +23,7 @@ import { RedirectrsService } from '../../../services/redirectrs/redirectrs.servi
         },
         response: {
             status: {
-                200: Joi.object().keys({
-                    id: Joi.string().required(),
-                    title: Joi.string().required(),
-                    description: Joi.string().required(),
-                    clicks: Joi.number().required(),
-                    main_link: Joi.number(),
-                    links: Joi.array()
-                })
+                200: RedirectrSchema
             }
         },
         description: 'Update one redirectr',
