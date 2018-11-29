@@ -15,7 +15,7 @@ export class RedirectrsService {
     constructor(private _redirectrsDocumentService: RedirectrsDocumentService) {}
 
     listAll(): Observable<Redirectrs[] | void> {
-        return this._redirectrsDocumentService.find().pipe(
+        return this._redirectrsDocumentService.findAll().pipe(
             catchError(error => _throw(Biim.internal(error.message))),
             flatMap(_ => !!_ ? of(_) : _throw(Biim.notFound('No Redirectr found')))
         );

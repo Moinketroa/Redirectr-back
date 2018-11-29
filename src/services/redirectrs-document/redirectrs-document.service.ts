@@ -1,5 +1,5 @@
 import { Injectable } from '@hapiness/core';
-import { RedirectrsModel } from '../../models/redirectrs/redirectrs.model';
+import { RedirectrsModel } from '../../models';
 import { MongoClientService } from '@hapiness/mongo';
 import { Config } from '@hapiness/config';
 import { Observable } from 'rxjs/Observable';
@@ -25,7 +25,7 @@ export class RedirectrsDocumentService {
         }, RedirectrsModel);
     }
 
-    find(): Observable<Redirectrs[] | void> {
+    findAll(): Observable<Redirectrs[] | void> {
         return fromPromise(this._document.find())
             .filter((docs: MongooseDocument[]) => !!docs && docs.length > 0)
             .map((docs: MongooseDocument[]) => docs.map(doc => doc.toJSON() as Redirectrs))
@@ -58,12 +58,12 @@ export class RedirectrsDocumentService {
             .defaultIfEmpty(undefined);
     }
 
-    search(query: string[]): Observable<Redirectrs[] | void> {
-        const rule = [];
-        query.forEach((tag: string) => rule.push({title: {'$regex' : tag, '$options' : 'i'}}));
-        query.forEach((tag: string) => rule.push({description: {'$regex' : tag, '$options' : 'i'}}));
+    search(tags: string[]): Observable<Redirectrs[] | void> {
+        const conditions = [];
+        tags.forEach((tag: string) => conditions.push({title: {'$regex' : tag, '$options' : 'i'}}));
+        tags.forEach((tag: string) => conditions.push({description: {'$regex' : tag, '$options' : 'i'}}));
 
-        return fromPromise(this._document.find().or(rule))
+        return fromPromise(this._document.find().or(conditions))
             .filter((docs: MongooseDocument[]) => !!docs && docs.length > 0)
             .map((docs: MongooseDocument[]) => docs.map(doc => doc.toJSON() as Redirectrs))
             .defaultIfEmpty(undefined);

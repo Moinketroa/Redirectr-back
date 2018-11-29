@@ -12,7 +12,7 @@ import {RedirectrSchema} from '../../../schema/redirectrs.schema';
     config: {
         response: {
             status: {
-                200: Joi.array().items(
+                    200: Joi.array().items(
                     RedirectrSchema
                 ).unique()
             }
